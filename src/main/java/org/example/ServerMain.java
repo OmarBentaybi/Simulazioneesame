@@ -13,8 +13,21 @@ import java.util.ArrayList;
 public class ServerMain {
 
     static ArrayList<City> cities = new ArrayList<City>();
+    static Gson gson = new Gson();
+
+    static public void sortbytemp(){
+        cities.sort((o1, o2) -> {
+            return -(o1.getTemp().compareTo(o2.getTemp()));
+        });
+    }
+    static public void sortbyname(){
+        cities.sort((o1, o2) -> {
+            return o1.getName().compareTo(o2.getName());
+        });
+    }
+
     static void buildCitiesList() {
-        cities.add(new City(3,"Toronto",15.9));
+        cities.add(new City(3,"Toronto",115.9));
         cities.add(new City(33,"Milan",25.94));
         cities.add(new City(55,"Rome",35.4));
         System.out.println(cities);
@@ -24,24 +37,20 @@ public class ServerMain {
         String ss=null;
         switch (s) {
             case "hottest":
-                ss=cities.get(2).toString();
+                sortbytemp();
+                City calda= cities.get(0);
+                ss=gson.toJson(calda);
                 break;
             case "all":
                 ss=cities.toString();
                 break;
             case "sorted_by_name":
-                cities.sort((o1, o2) -> {
-                    return o1.getName().compareTo(o2.getName());
-                });
-                Gson gson = new Gson();
+                sortbyname();
                 ss = gson.toJson(cities);
                 break;
             case "sorted_by_temp":
-                cities.sort((o1, o2) -> {
-                    return o1.getTemp().compareTo(o2.getTemp());
-                });
-                Gson gson2 = new Gson();
-                ss = gson2.toJson(cities);
+                sortbytemp();
+                ss = gson.toJson(cities);
                 break;
         }
         return ss;
